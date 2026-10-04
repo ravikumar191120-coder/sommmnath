@@ -98,25 +98,45 @@ export const ChaiCorner: React.FC = () => {
             />
           </div>
 
-          {/* Steaming Tea Cup Illustration */}
+          {/* Steaming Coffee & Tea Cup with Visible Hot Liquid */}
           <motion.div
-            animate={isBrewing ? { rotate: [0, -8, 8, -4, 0], scale: [1, 1.12, 1] } : { y: [0, -3, 0] }}
+            animate={isBrewing ? { rotate: [0, -6, 6, -3, 0], scale: [1, 1.1, 1] } : { y: [0, -3, 0] }}
             transition={isBrewing ? { duration: 0.4 } : { repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
-            className="relative"
+            className="relative flex flex-col items-center"
           >
-            {/* The Ceramic Tea Cup */}
-            <div className="relative w-24 h-20 bg-gradient-to-b from-amber-100 via-rose-50 to-amber-200 rounded-b-3xl border-2 border-amber-300 shadow-md flex items-center justify-center">
-              {/* Cup Heart Print */}
-              <div className="w-8 h-8 rounded-full bg-rose-400/20 flex items-center justify-center">
-                <Heart className="h-4 w-4 text-rose-500 fill-rose-500" />
+            {/* The Ceramic Mug Container */}
+            <div className="relative">
+              {/* Cup Handle on the right */}
+              <div className="absolute top-4 -right-5 w-7 h-14 border-[5px] border-amber-300 rounded-r-3xl shadow-sm z-0" />
+
+              {/* Top Cup Rim showing HOT COFFEE / TEA LIQUID inside! */}
+              <div className="relative z-20 w-28 h-8 rounded-[50%] bg-gradient-to-b from-amber-200 to-amber-300 border-2 border-amber-400 p-[3px] shadow-inner">
+                {/* Steaming Dark Coffee/Chai Liquid */}
+                <div className="w-full h-full rounded-[50%] bg-gradient-to-r from-[#381a0b] via-[#562912] to-[#3f1e0d] flex items-center justify-center relative overflow-hidden shadow-inner">
+                  {/* Creamy Foam Swirl */}
+                  <div className="absolute inset-1 rounded-[50%] border border-amber-300/30 opacity-70" />
+                  {/* Latte Art Heart */}
+                  <div className="flex items-center justify-center gap-0.5">
+                    <span className="text-[11px] select-none filter drop-shadow-xs">☕</span>
+                    <Heart className="h-3 w-3 text-amber-100 fill-amber-100/90" />
+                  </div>
+                </div>
               </div>
 
-              {/* Cup Handle */}
-              <div className="absolute top-2 -right-4 w-6 h-10 border-4 border-amber-300 rounded-r-2xl" />
+              {/* Cup Main Ceramic Body */}
+              <div className="relative z-10 w-28 h-20 -mt-4 bg-gradient-to-b from-amber-100 via-rose-50 to-amber-200 rounded-b-3xl border-2 border-t-0 border-amber-300 shadow-md flex flex-col items-center justify-center pt-2">
+                <span className="text-xs font-bold text-amber-900 font-serif tracking-tight flex items-center gap-1">
+                  <span>☕</span>
+                  <span>Chai & Coffee</span>
+                </span>
+                <span className="text-[10px] text-amber-700/80 font-medium mt-0.5">
+                  Freshly Brewed
+                </span>
+              </div>
             </div>
 
             {/* Cup Saucer Plate */}
-            <div className="w-32 h-3.5 bg-gradient-to-r from-amber-200 via-amber-100 to-amber-200 rounded-full shadow-sm mx-auto -mt-1 border border-amber-300" />
+            <div className="w-36 h-4 bg-gradient-to-r from-amber-200 via-amber-100 to-amber-200 rounded-full shadow-sm mx-auto -mt-1 border border-amber-300 z-0" />
           </motion.div>
         </div>
 

@@ -18,83 +18,82 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
   onTogglePlay,
   onOpenSettings
 }) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const mediaRef = useRef<HTMLVideoElement | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [volume, setVolume] = useState(0.6); // set to 60% as requested
   const [showVolumeControl, setShowVolumeControl] = useState(false);
 
   // Initialize and attempt autoplay with 60% volume
   useEffect(() => {
-    if (!audioRef.current) return;
+    const media = mediaRef.current;
+    if (!media) return;
 
-    audioRef.current.volume = 0.6;
-    audioRef.current.loop = true;
+    media.volume = volume;
+    media.loop = true;
 
-    const startAudio = () => {
-      if (audioRef.current) {
-        audioRef.current.volume = volume;
-        audioRef.current
-          .play()
-          .then(() => {
-            setHasInteracted(true);
-            if (!isPlaying) onTogglePlay();
-          })
-          .catch(() => {});
-      }
+    const playAudio = () => {
+      media.volume = volume;
+      media
+        .play()
+        .then(() => {
+          setHasInteracted(true);
+          if (!isPlaying) onTogglePlay();
+        })
+        .catch(() => {});
     };
 
-    // Immediate attempt
-    startAudio();
+    media.addEventListener('canplay', playAudio, { once: true });
+    playAudio();
 
-    // Fallback: start on the very first touch/click anywhere on the screen
-    const unlockAudio = () => {
-      startAudio();
-      window.removeEventListener('click', unlockAudio);
-      window.removeEventListener('touchstart', unlockAudio);
-      window.removeEventListener('scroll', unlockAudio);
-      window.removeEventListener('keydown', unlockAudio);
+    // Instant unlock on first touch anywhere on screen
+    const unlockOnGesture = () => {
+      playAudio();
+      window.removeEventListener('click', unlockOnGesture);
+      window.removeEventListener('touchstart', unlockOnGesture);
+      window.removeEventListener('scroll', unlockOnGesture);
     };
 
-    window.addEventListener('click', unlockAudio, { once: true });
-    window.addEventListener('touchstart', unlockAudio, { once: true });
-    window.addEventListener('scroll', unlockAudio, { once: true });
-    window.addEventListener('keydown', unlockAudio, { once: true });
+    window.addEventListener('click', unlockOnGesture, { once: true, passive: true });
+    window.addEventListener('touchstart', unlockOnGesture, { once: true, passive: true });
+    window.addEventListener('scroll', unlockOnGesture, { once: true, passive: true });
 
     return () => {
-      window.removeEventListener('click', unlockAudio);
-      window.removeEventListener('touchstart', unlockAudio);
-      window.removeEventListener('scroll', unlockAudio);
-      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('click', unlockOnGesture);
+      window.removeEventListener('touchstart', unlockOnGesture);
+      window.removeEventListener('scroll', unlockOnGesture);
     };
   }, [audioUrl]);
 
-  // Synchronize playing state with audio element
+  // Synchronize playing state with media element
   useEffect(() => {
-    if (!audioRef.current) return;
+    const media = mediaRef.current;
+    if (!media) return;
     if (isPlaying) {
-      audioRef.current.volume = volume;
-      audioRef.current.play().catch(() => {});
+      media.volume = volume;
+      media.play().catch(() => {});
     } else {
-      audioRef.current.pause();
+      media.pause();
     }
-  }, [isPlaying]);
+  }, [isPlaying, volume]);
 
   const handleVolumeChange = (newVol: number) => {
     const clamped = Math.max(0, Math.min(1, newVol));
     setVolume(clamped);
-    if (audioRef.current) {
-      audioRef.current.volume = clamped;
+    if (mediaRef.current) {
+      mediaRef.current.volume = clamped;
     }
   };
 
   return (
     <>
-      <audio
-        ref={audioRef}
+      {/* Hidden media element supporting mp4 audio natively */}
+      <video
+        ref={mediaRef}
         src={audioUrl}
+        playsInline
         preload="auto"
         loop
-        playsInline
+        className="hidden"
       />
 
       {/* Floating Bottom Music Bar with 60% Volume Controller */}

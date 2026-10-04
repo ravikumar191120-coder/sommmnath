@@ -45,7 +45,7 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen bg-[#FFF9F9] text-stone-800 font-sans selection:bg-pink-200 selection:text-pink-900 overflow-x-hidden">
-      {/* Starting Animation / Intro Curtain */}
+      {/* Starting Loading & Entry Interface */}
       {!hasEntered && (
         <IntroCurtain
           onEnter={() => {

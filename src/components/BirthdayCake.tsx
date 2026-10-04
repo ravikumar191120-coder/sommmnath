@@ -91,41 +91,55 @@ export const BirthdayCake: React.FC = () => {
                 className="flex flex-col items-center cursor-pointer group"
                 title={isLit ? 'Click to blow out' : 'Click to light back'}
               >
-                {/* Flame */}
-                <div className="h-7 flex items-center justify-center">
+                {/* Flame with Bold Blazing Fire Effect */}
+                <div className="h-11 flex items-end justify-center mb-1">
                   <AnimatePresence>
                     {isLit ? (
                       <motion.div
                         key="flame"
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{
-                          scale: [1, 1.25, 0.95, 1.15, 1],
-                          y: [0, -2, 0]
+                          scaleY: [1, 1.25, 0.9, 1.2, 1],
+                          scaleX: [1, 0.85, 1.1, 0.9, 1],
+                          rotate: [-4, 5, -3, 4, 0],
+                          y: [0, -3, 0]
                         }}
                         exit={{
                           scale: 0,
                           opacity: 0,
-                          y: -8,
+                          y: -12,
                           transition: { duration: 0.25 }
                         }}
                         transition={{
                           repeat: Infinity,
-                          duration: 0.8 + (idx % 3) * 0.2,
+                          duration: 0.5 + (idx % 3) * 0.12,
                           ease: 'easeInOut'
                         }}
-                        className="relative flex items-center justify-center"
+                        className="relative flex flex-col items-center justify-end"
                       >
-                        {/* Glow halo */}
-                        <div className="absolute w-6 h-6 bg-amber-300/40 rounded-full blur-xs" />
-                        <div className="w-3.5 h-5 bg-gradient-to-t from-orange-500 via-amber-400 to-yellow-200 rounded-full rounded-t-full shadow-sm shadow-orange-300" />
+                        {/* Radiant Ambient Fire Light Glow */}
+                        <div className="absolute -inset-3 bg-gradient-to-t from-red-500/50 via-amber-400/50 to-yellow-200/40 rounded-full blur-[4px] animate-pulse" />
+
+                        {/* Outer Blazing Fire Flame Body */}
+                        <div className="relative w-5 h-8 rounded-[50%_50%_50%_50%/70%_70%_30%_30%] bg-gradient-to-t from-red-600 via-orange-500 to-amber-300 shadow-[0_0_16px_#EA580C] flex flex-col items-center justify-end overflow-hidden">
+                          {/* Inner Yellow Core Flame */}
+                          <div className="w-3 h-5 bg-gradient-to-t from-orange-400 via-yellow-300 to-amber-100 rounded-full mb-0.5 shadow-xs" />
+                          {/* White-Hot Flame Center */}
+                          <div className="absolute top-2 w-1.5 h-2.5 bg-white/95 rounded-full blur-[0.5px]" />
+                          {/* Burning Blue Base */}
+                          <div className="absolute bottom-0 w-2.5 h-1.5 bg-blue-600/90 rounded-full blur-[0.5px]" />
+                        </div>
+
+                        {/* Candle Black Wick */}
+                        <div className="w-0.5 h-2 bg-stone-900 -mb-0.5" />
                       </motion.div>
                     ) : (
                       <motion.div
                         key="smoke"
-                        initial={{ opacity: 0.8, y: 0, scale: 0.6 }}
-                        animate={{ opacity: 0, y: -16, scale: 1.4 }}
-                        transition={{ duration: 0.7 }}
-                        className="w-1.5 h-3 bg-stone-300 rounded-full blur-[0.5px]"
+                        initial={{ opacity: 0.9, y: 0, scale: 0.6 }}
+                        animate={{ opacity: 0, y: -24, scale: 1.8 }}
+                        transition={{ duration: 0.8 }}
+                        className="w-2 h-4 bg-stone-400 rounded-full blur-[0.5px]"
                       />
                     )}
                   </AnimatePresence>

@@ -21,6 +21,8 @@ const isVideoUrl = (url: string) => {
 
 const LoopingCardVideo: React.FC<{ url: string }> = ({ url }) => {
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   React.useEffect(() => {
     const video = videoRef.current;
@@ -31,29 +33,47 @@ const LoopingCardVideo: React.FC<{ url: string }> = ({ url }) => {
     video.playsInline = true;
     video.loop = true;
 
-    const playVideo = () => {
-      video.play().catch(() => {});
+    const tryPlay = () => {
+      video
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {});
     };
 
-    playVideo();
+    video.addEventListener('canplay', tryPlay);
+    video.addEventListener('loadeddata', () => setIsLoaded(true));
 
-    const resumeOnGesture = () => {
-      playVideo();
-      window.removeEventListener('click', resumeOnGesture);
-      window.removeEventListener('touchstart', resumeOnGesture);
+    tryPlay();
+
+    const resumeOnTouch = () => {
+      tryPlay();
+      window.removeEventListener('click', resumeOnTouch);
+      window.removeEventListener('touchstart', resumeOnTouch);
+      window.removeEventListener('scroll', resumeOnTouch);
     };
 
-    window.addEventListener('click', resumeOnGesture, { once: true });
-    window.addEventListener('touchstart', resumeOnGesture, { once: true });
+    window.addEventListener('click', resumeOnTouch, { once: true, passive: true });
+    window.addEventListener('touchstart', resumeOnTouch, { once: true, passive: true });
+    window.addEventListener('scroll', resumeOnTouch, { once: true, passive: true });
 
     return () => {
-      window.removeEventListener('click', resumeOnGesture);
-      window.removeEventListener('touchstart', resumeOnGesture);
+      video.removeEventListener('canplay', tryPlay);
+      window.removeEventListener('click', resumeOnTouch);
+      window.removeEventListener('touchstart', resumeOnTouch);
+      window.removeEventListener('scroll', resumeOnTouch);
     };
   }, [url]);
 
   return (
-    <div className="relative w-full h-full bg-black flex items-center justify-center">
+    <div className="relative w-full h-full bg-stone-900 overflow-hidden flex items-center justify-center">
+      {/* Loading Placeholder */}
+      {!isLoaded && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-pink-100/50 animate-pulse z-0">
+          <Video className="h-6 w-6 text-pink-400 animate-spin" />
+          <span className="text-[10px] text-pink-600 font-mono mt-1">Loading clip...</span>
+        </div>
+      )}
+
       <video
         ref={videoRef}
         src={url}
@@ -62,11 +82,14 @@ const LoopingCardVideo: React.FC<{ url: string }> = ({ url }) => {
         autoPlay
         loop
         preload="auto"
-        className="w-full h-full object-cover"
+        className={`w-full h-full object-cover transition-opacity duration-300 ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
       />
-      <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-medium flex items-center gap-1 backdrop-blur-xs z-10">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        <span>Looping</span>
+
+      <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-medium flex items-center gap-1.5 backdrop-blur-xs z-10">
+        <span className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+        <span>{isPlaying ? 'Playing Loop' : 'Tap to Play'}</span>
       </div>
     </div>
   );
